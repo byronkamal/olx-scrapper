@@ -5,29 +5,10 @@ const axios = require('axios')
 let samsung_url =
   'https://df.olx.com.br/distrito-federal-e-regiao/brasilia/celulares/samsung?q=s10&sf=1'
 
-sendMessage = async (link, foto, titulo, preco, local, data) => {
-  const token = 'xoxb-1323035210197-1326141891794-6XiWjQbl9Xq1WCfQueToFO4v'
-
-  const web = new WebClient(token)
-
-  const conversationId = 'C019SH50FL4'
-
-  // See: https://api.slack.com/methods/chat.postMessage
-  const res = await web.chat.postMessage({
-    channel: conversationId,
-    text: `
-  ${foto}
-
-  titulo: ${titulo}
-  preço: ${preco}
-  local: ${local}
-  data: ${data}
-  \n
-  `,
-  })
-}
-;(async () => {
+const getInfos = async () => {
   let res_page = await axios.get(samsung_url)
+
+  let informacoes = []
 
   let $ = cheerio.load(res_page.data)
 
@@ -60,14 +41,67 @@ sendMessage = async (link, foto, titulo, preco, local, data) => {
       .find('div > :nth-child(2) > :nth-child(1) > :nth-child(3)')
       .text()
 
-    console.log('\n')
-    console.log('link: ', link)
-    console.log('imagem: ', foto)
-    console.log('titulo: ', titulo)
-    console.log('preco: ', preco)
-    console.log('local: ', local)
-    console.log('data: ', data)
+    // console.log('\n')
+    // console.log('link: ', link)
+    // console.log('imagem: ', foto)
+    // console.log('titulo: ', titulo)
+    // console.log('preco: ', preco)
+    // console.log('local: ', local)
+    // console.log('data: ', data)
 
-    sendMessage(link, foto, titulo, preco, local, data)
+    informacoes.push({
+      link,
+      titulo,
+      preco,
+      local,
+      data,
+    })
   })
+
+  return informacoes
+}
+
+sendMessage = async (dados) => {
+  for (dado of dados) {
+    const token = 'xoxb-1323035210197-1326141891794-6XiWjQbl9Xq1WCfQueToFO4v'
+
+    const web = new WebClient(token)
+
+    const conversationId = 'C019JEWPNE9'
+
+    if (parseFloat(dado.preco.split(' ')[1]) < 2.001) {
+      // See: https://api.slack.com/methods/chat.postMessage
+      const res = await web.chat.postMessage({
+        channel: conversationId,
+        text: `
+        ${dado.link}
+        titulo: ${dado.titulo}
+        preço: ${dado.preco}
+        local: ${dado.local}
+        data: ${dado.data}
+        \n
+        \n
+    `,
+      })
+    }
+  }
+
+  const token = 'xoxb-1323035210197-1326141891794-6XiWjQbl9Xq1WCfQueToFO4v'
+
+  const web = new WebClient(token)
+
+  const conversationId = 'C019JEWPNE9'
+
+  await web.chat.postMessage({
+    channel: conversationId,
+    text: `
+    ----------------------------
+    \n
+    ---------------------------
+    `,
+  })
+}
+;(async () => {
+  let infos = await getInfos()
+  let send = await sendMessage(infos)
 })()
