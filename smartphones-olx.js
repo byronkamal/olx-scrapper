@@ -3,7 +3,7 @@ const cheerio = require('cheerio')
 const axios = require('axios')
 
 let samsung_url =
-  'https://df.olx.com.br/distrito-federal-e-regiao/brasilia/celulares/samsung?q=s10&sf=1'
+  'https://df.olx.com.br/distrito-federal-e-regiao/brasilia/ciclismo?q=bicicleta'
 
 const getInfos = async () => {
   let res_page = await axios.get(samsung_url)
@@ -63,18 +63,14 @@ const getInfos = async () => {
 
 sendMessage = async (dados) => {
   for (dado of dados) {
-    // const token = process.env.SLACK_TOKEN
-    const token = 'xoxb-1323035210197-1326141891794-6XiWjQbl9Xq1WCfQueToFO4v'
-
-    // console.log('aqui')
+    const token = process.env.SLACK_TOKEN
+    // const token = 'xoxb-1323035210197-1326141891794-6XiWjQbl9Xq1WCfQueToFO4v'
 
     const web = new WebClient(token)
 
-    const conversationId = 'C019MPYPXD1' // canal de celular
+    // const conversationId = 'C019MPYPXD1' // canal de celular
     // const conversationId = 'C01BM9UP97X' // canal de bibicletas
-
-    // const conversationId = process.env.CONSERSATION_ID
-    // console.log('aqui 2')
+    const conversationId = process.env.CONSERSATION_ID
 
     if (parseFloat(dado.preco.split(' ')[1]) < 2.001) {
       // See: https://api.slack.com/methods/chat.postMessage
@@ -97,12 +93,14 @@ sendMessage = async (dados) => {
   let infos = await getInfos()
   let send = await sendMessage(infos)
 
-  const token = 'xoxb-1323035210197-1326141891794-6XiWjQbl9Xq1WCfQueToFO4v'
-  // console.log('aqui 3')
+  const token = process.env.SLACK_TOKEN
+  // const token = 'xoxb-1323035210197-1326141891794-6XiWjQbl9Xq1WCfQueToFO4v'
 
   const web = new WebClient(token)
 
-  const conversationId = 'C019MPYPXD1'
+  const conversationId = process.env.CONSERSATION_ID
+  // const conversationId = 'C019MPYPXD1' // canal de celular
+  // const conversationId = 'C01BM9UP97X' // canal de bibicletas
 
   await web.chat.postMessage({
     channel: conversationId,
