@@ -1,0 +1,22 @@
+ 
+sudo: required
+
+language:
+  - node_js
+
+node_js:
+  - "12.18.1"
+
+stages:
+  - Scrapper
+
+before_install:
+  - yarn install
+
+jobs:
+  include:
+    - stage: "Scrapper"
+      name: "Scrapper"
+      script:
+        # run Scrapper
+        - node smartphones-olx.js
