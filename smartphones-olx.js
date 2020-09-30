@@ -63,11 +63,15 @@ const getInfos = async () => {
 
 sendMessage = async (dados) => {
   for (dado of dados) {
-    const token = 'xoxb-1323035210197-1326141891794-6XiWjQbl9Xq1WCfQueToFO4v'
+    
+    const token = process.env.SLACK_TOKEN;
+//     const token = 'xoxb-1323035210197-1326141891794-6XiWjQbl9Xq1WCfQueToFO4v'
 
     const web = new WebClient(token)
 
-    const conversationId = 'C019MPYPXD1'
+//     const conversationId = 'C019MPYPXD1'
+    
+    const conversationId = process.env.CONSERSATION_ID;
 
     if (parseFloat(dado.preco.split(' ')[1]) < 2.001) {
       // See: https://api.slack.com/methods/chat.postMessage
