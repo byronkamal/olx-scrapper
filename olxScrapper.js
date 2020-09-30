@@ -2,11 +2,11 @@ const { WebClient } = require('@slack/web-api')
 const cheerio = require('cheerio')
 const axios = require('axios')
 
-let samsung_url =
+let url =
   'https://df.olx.com.br/distrito-federal-e-regiao/brasilia/ciclismo?q=bicicleta'
 
 const getInfos = async () => {
-  let res_page = await axios.get(samsung_url)
+  let res_page = await axios.get(url)
 
   let informacoes = []
 
@@ -64,12 +64,9 @@ const getInfos = async () => {
 sendMessage = async (dados) => {
   for (dado of dados) {
     const token = process.env.SLACK_TOKEN
-    // const token = 'xoxb-1323035210197-1326141891794-6XiWjQbl9Xq1WCfQueToFO4v'
 
     const web = new WebClient(token)
 
-    // const conversationId = 'C019MPYPXD1' // canal de celular
-    // const conversationId = 'C01BM9UP97X' // canal de bibicletas
     const conversationId = process.env.CONSERSATION_ID
 
     if (parseFloat(dado.preco.split(' ')[1]) < 2.001) {
@@ -94,13 +91,10 @@ sendMessage = async (dados) => {
   let send = await sendMessage(infos)
 
   const token = process.env.SLACK_TOKEN
-  // const token = 'xoxb-1323035210197-1326141891794-6XiWjQbl9Xq1WCfQueToFO4v'
 
   const web = new WebClient(token)
 
   const conversationId = process.env.CONSERSATION_ID
-  // const conversationId = 'C019MPYPXD1' // canal de celular
-  // const conversationId = 'C01BM9UP97X' // canal de bibicletas
 
   await web.chat.postMessage({
     channel: conversationId,
