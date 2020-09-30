@@ -19,4 +19,4 @@ jobs:
       name: "Scrapper"
       script:
         # run Scrapper
-        - node smartphones-olx.js
+        - node olxScrapper.js

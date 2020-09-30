@@ -2,100 +2,103 @@ const { WebClient } = require('@slack/web-api')
 const cheerio = require('cheerio')
 const axios = require('axios')
 
+// slack credentials
+const token = process.env.SLACK_TOKEN
+const conversationId = process.env.CONSERSATION_ID
+
 let url =
-  'https://df.olx.com.br/distrito-federal-e-regiao/brasilia/ciclismo?q=bicicleta'
+  'https://df.olx.com.br/distrito-federal-e-regiao/brasilia/ciclismo?q=aro%2029%20quadro%2017&sp=1'
 
 const getInfos = async () => {
   let res_page = await axios.get(url)
 
-  let informacoes = []
+  let infos = []
 
   let $ = cheerio.load(res_page.data)
 
-  lista_informacoes = $('#ad-list')
+  info_list = $('#ad-list')
 
-  lista_informacoes.find('a').each(function (item, element) {
-    let caminho_A_foto = $(this).find('div > div > div').find('img').attr('src')
-    let caminho_B_foto = $(this)
+  info_list.find('a').each(function (item, element) {
+    let path_A_photo = $(this).find('div > div > div').find('img').attr('src')
+
+    let path_B_photo = $(this)
       .find('div > div > div')
       .find('img')
-      .attr('data-src')
+      .attr('date-src')
 
-    const condicao_caminho_B_foto =
-      'data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs='
+    const condition_path_B_photo =
+      'date:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs='
 
-    let foto =
-      caminho_A_foto.trim() !== condicao_caminho_B_foto
-        ? caminho_A_foto
-        : caminho_B_foto
+    let photo =
+      path_A_photo.trim() !== condition_path_B_photo
+        ? path_A_photo
+        : path_B_photo
 
     let link = $(this).attr('href')
-    let titulo = $(this).attr('title')
-    let preco = $(this)
+    let title = $(this).attr('title')
+    let price = $(this)
       .find('div > :nth-child(2) > div:nth-child(1) > div:nth-child(2)')
       .text()
-    let local = $(this)
+    let place = $(this)
       .find('div > :nth-child(2) > :nth-child(2) > div > :nth-child(1)')
       .text()
-    let data = $(this)
+    let date = $(this)
       .find('div > :nth-child(2) > :nth-child(1) > :nth-child(3)')
       .text()
 
     // console.log('\n')
     // console.log('link: ', link)
-    // console.log('imagem: ', foto)
-    // console.log('titulo: ', titulo)
-    // console.log('preco: ', preco)
-    // console.log('local: ', local)
-    // console.log('data: ', data)
+    // console.log('imagem: ', photo)
+    // console.log('title: ', title)
+    // console.log('price: ', price)
+    // console.log('place: ', place)
+    // console.log('date: ', date)
 
-    informacoes.push({
+    infos.push({
       link,
-      titulo,
-      preco,
-      local,
-      data,
+      title,
+      price,
+      place,
+      date,
     })
   })
 
-  return informacoes
+  return infos
 }
 
-sendMessage = async (dados) => {
-  for (dado of dados) {
-    const token = process.env.SLACK_TOKEN
-
+sendMessage = async (products) => {
+  for (product of products) {
     const web = new WebClient(token)
 
-    const conversationId = process.env.CONSERSATION_ID
+    let price = parseFloat(product.price.split(' ')[1].replace('.', ''))
 
-    if (parseFloat(dado.preco.split(' ')[1]) < 2.001) {
+    if (price < 1250) {
+      console.log('price', price)
+
       // See: https://api.slack.com/methods/chat.postMessage
       const res = await web.chat.postMessage({
         channel: conversationId,
         text: `
-        ${dado.link}
-        titulo: ${dado.titulo}
-        preço: ${dado.preco}
-        local: ${dado.local}
-        data: ${dado.data}
-        \n
-        \n
-    `,
+          ${product.link}
+          title: ${product.title}
+          preço: ${product.price}
+          place: ${product.place}
+          date: ${product.date}
+          \n
+          \n
+      `,
       })
     }
   }
 }
 ;(async () => {
   let infos = await getInfos()
-  let send = await sendMessage(infos)
 
-  const token = process.env.SLACK_TOKEN
+  let message = await sendMessage(infos)
 
   const web = new WebClient(token)
 
-  const conversationId = process.env.CONSERSATION_ID
-
+  // this is sent to the slack to indicate the end of a list of information
   await web.chat.postMessage({
     channel: conversationId,
     text: `
