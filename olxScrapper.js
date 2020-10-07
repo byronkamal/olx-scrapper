@@ -7,7 +7,7 @@ const token = process.env.SLACK_TOKEN
 const conversationId = process.env.CONSERSATION_ID
 
 let url =
-  'https://df.olx.com.br/distrito-federal-e-regiao/brasilia/ciclismo?q=aro%2029%20quadro%2017&sp=1'
+  'https://df.olx.com.br/distrito-federal-e-regiao/brasilia/ciclismo?q=aro%2029&sf=1'
 
 const getInfos = async () => {
   let res_page = await axios.get(url)
