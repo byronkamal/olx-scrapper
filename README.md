@@ -2,7 +2,7 @@
 
 ## Project 💻
 
-Olx scrapper takes data from [OLX's website](https://www.olx.com.br/) and sends it to a Slack channel through a [slack app](https://smartphonesolx.slack.com/apps).
+Olx scrapper takes data from [OLX website](https://www.olx.com.br/) and sends it to a Slack channel through a [slack app](https://smartphonesolx.slack.com/apps).
 <br>
 
 ## Techs :rocket:
