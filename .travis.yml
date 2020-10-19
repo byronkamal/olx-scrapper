@@ -1,11 +1,10 @@
- 
 sudo: required
 
 language:
   - node_js
 
 node_js:
-  - "12.18.1"
+  - '12.18.1'
 
 stages:
   - Scrapper
@@ -15,8 +14,8 @@ before_install:
 
 jobs:
   include:
-    - stage: "Scrapper"
-      name: "Scrapper"
+    - stage: 'Scrapper'
+      name: 'Scrapper'
       script:
         # run Scrapper
-        - node olxScrapper.js
+        - node src/olxScrapper.js

@@ -14,14 +14,15 @@ Olx scrapper takes data from [OLX's website](https://www.olx.com.br/) and sends 
 
 <br>
 
-
 ## Pipeline
-![pipeline](./pipeline%20olx-scrapper.png)
+
+![pipeline](./img/pipeline.png)
 
 ## License :memo:
 
 [![License](http://img.shields.io/:license-mit-blue.svg?style=flat-square)](http://badges.mit-license.org)
+
 - **[MIT license](https://github.com/byronkamal/BeTheHero/blob/master/LICENSE)**
 - Copyright 2020 © <a href="https://github.com/byronkamal" target="_blank">Byron Kamal</a>.
 
-## 
+##
